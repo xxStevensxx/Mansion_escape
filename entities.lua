@@ -27,6 +27,7 @@ function Entities.createHero()
         hero.images = heroSprites.images
         hero.type = HERO
         hero.nbFrame = heroSprites.nbFrame
+        hero.currentFrame = heroSprites.currentFrame
         hero.width = heroSprites.width
         hero.height = heroSprites.height
         hero.offsetX = hero.width / 2
@@ -45,6 +46,7 @@ function Entities.createMob()
     mob.images = mobSprites.images
     mob.type = MOB
     mob.nbFrame = mobSprites.nbFrame
+    mob.currentFrame = mobSprites.currentFrame
     mob.width = mobSprites.width
     mob.height = mobSprites.height
     mob.offsetX = mob.width / 2
