@@ -12,7 +12,7 @@ function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
 
 --1er param delta time
 --2nd param notre l'entité sur laquelle vont etre appliqué nos conditions
-function statesMachines.states(dt, entities)
+function statesMachines.states(dt, entities, lstEntities)
 -- Voici notre machine a etat pour tout nos mobs
 
     --NONE aucun statut en cours
@@ -66,15 +66,57 @@ function statesMachines.states(dt, entities)
             collider = true
         end
 
+        -- en cas de collision on fais notre entities changer de direction en changant son status
         if collider then
             entities.state = const.CHANGEDIR
         end
 
-        -- ******************************************
+        -- local distance
+
+        --On fait notre entities chercher notre heros dans son errance
+        for key, entitie in ipairs(lstEntities) do 
+            -- On verifie si il y'a un hero dans notre liste et on le recupere
+            if entitie.type == const.HERO then
+                -- on calcul la distance entre le mob et le hero entities = mob, entitie = hero
+                local distance = math.dist(entities.x, entities.y, entitie.x, entitie.y)
+                -- on verifie que le hero est dans le champs d'action de notre mob
+                if distance < entities.range then
+                    -- on change son statut et defini la cible du mob
+                    entities.state = const.PURSUIT
+                    entities.target = entitie
+                end
+
+            end
+            
+        end
 
 
     --PURSUIT notre entities poursuit le hero
     elseif entities.state == const.PURSUIT then
+
+        -- On gere le nil pointer exception
+        if  entities.target == nil then
+            --si il n'a pas de target il change de direction
+            entities.state = const.CHANGEDIR
+
+            --si la distance entre le mob et sa cible est superieur au range du mob il change de direction
+        elseif math.dist(entities.x, entities.y, entities.target.x, entities.target.y) > entities.range and entities.target.type == const.HERO then
+            entities.state = const.CHANGEDIR
+
+            --si la distance entre le mob et sa cible est inferieur a 5 et son type est bien HERO on passe à l'attaque
+        elseif math.dist(entities.x, entities.y, entities.target.x, entities.target.y) < 5 and entities.target.type == const.HERO then
+            entities.state = const.ATTACK
+            --On fait notre mob s'aretter afin d'attaquer
+            entities.vx = 0
+            entities.vy = 0
+
+        else --le mob se dirige vers sa target
+            -- renvoi l'angle entre les deux vecteurs
+            local angle = math.angle(entities.x, entities.y, entities.target.x, entities.target.y)
+            --on ajooute de la velocité a son angle pour qu'il suive sa target
+            entities.vx = entities.speed * math.cos(angle)
+            entities.vy = entities.speed * math.sin(angle)
+        end
 
     --EAR Notre entities entend du bruit
     elseif entities.state == const.EAR then
@@ -84,9 +126,16 @@ function statesMachines.states(dt, entities)
 
     --ATTACK notre entities passe à l'attack
     elseif entities.state == const.ATTACK then
-
+        -- On verifie que si notre hero se deplace on se remette à le poursuivre
+         if math.dist(entities.x, entities.y, entities.target.x, entities.target.y) > 5 then
+            entities.state = const.PURSUIT
+        -- sinon on l áttaque et lui retire de la vie
+         else
+            print("life --")
+         end
 
     end
+    
 end
 
 function statesMachines.update(dt, entities)
