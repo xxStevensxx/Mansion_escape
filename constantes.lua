@@ -11,9 +11,11 @@ local constantes = {
      -- Constantes de entities type 
      HERO = "hero",
      MOB = "mob",
+     GHOST = "ghost",
      -- Constantes de nom de fichier
      HERO_SPRT = "player_",
      MOB_SPRT = "monster_",
+     GHOST_SPRT = "ghost_",
      SCREENWIDTH = love.graphics.getWidth(),
      SCREENHEIGHT = love.graphics.getHeight()
     
