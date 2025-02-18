@@ -11,6 +11,7 @@ local const = require("/constantes")
 local controller = require("/playerConctroller")
 local machine =  require("/statesMachines")
 local lstEntities = {}
+local eye = love.graphics.newImage("/assets/eye.png")
 
 love.graphics.setDefaultFilter("nearest")
 math.randomseed(os.time())
@@ -26,6 +27,15 @@ function love.load()
         zombie = entitie.create(const.MOB)
         table.insert(lstEntities, zombie)
     end
+
+    --On creer un ou des ghost et on l'ajoute dans notre liste d'entities
+    for nb = 1, 10 do
+        ghost = entitie.create(const.GHOST)
+        table.insert(lstEntities, ghost)
+    end
+
+
+    
 end
 
 
