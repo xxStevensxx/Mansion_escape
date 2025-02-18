@@ -45,7 +45,7 @@ function love.update(dt)
         -- on verifie si on a des mobs
         if lstEntities[nb].type == const.MOB then
             -- si oui on applique notre machine a etats sur nos entities de type mob
-            machine.states(dt, lstEntities[nb])
+            machine.states(dt, lstEntities[nb], lstEntities)
             machine.update(dt, lstEntities)
         end
     end
