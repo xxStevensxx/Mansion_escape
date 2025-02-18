@@ -1,19 +1,19 @@
 local spriteManager = {}
 
-
--- 1 param = nom du fichier 
--- 2 param == nombre de frame du type d'entities
-function spriteManager.CreateSprite(frameName, frameNb)
+-- 1 param = type de frame selon le type d'entities 
+-- 2 param = nom du fichier
+-- 3 param == nombre de frame du type d'entities
+function spriteManager.CreateSprite(typeFrame, frameName, frameNb)
 
     -- Notre liste de sprites et ses attributs
     local sprites = {
-        images = {}
+        images = {},
         currentFrame = 0,
         nbFrame = frameNb,
     }
 
         --on boucle sur le nb de frame specifié en parametre afin d'ajouter les psrites necessaires 
-        for index = 1, nbFrame do 
+        for index = 1, frameNb do 
             -- On formate notre filename afin d'ajouter nos images dynamiquement
             local fileName = "/assets/"..frameName..tostring(index)..".png"
 
