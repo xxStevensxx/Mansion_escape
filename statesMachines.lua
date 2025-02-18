@@ -23,14 +23,18 @@ function statesMachines.states(dt, entities, lstEntities)
     --CHANGEDIR applique un angle et une velocité a notre entité afin qu'il change de direction
     elseif entities.state == const.CHANGEDIR then
 
-        --Le vecteur A donc x1 et x2 va du point A vers, B x2, y2 -> (e.x, e.y) → (scrnW,scrnH)
-        local angle = math.angle(entities.x, entities.y, love.math.random(const.SCREENWIDTH), love.math.random(const.SCREENHEIGHT))
+        -- if entities.type == const.MOB then
+            --Le vecteur A donc x1 et x2 va du point A vers, B x2, y2 -> (e.x, e.y) → (scrnW,scrnH)
+            local angle = math.angle(entities.x, entities.y, love.math.random(const.SCREENWIDTH), love.math.random(const.SCREENHEIGHT))
 
-        --On ajoute une velocité a x et y donc vx et vy en multipliant la vitesse au cos de l'angle pour X et le sin de l'angle pour Y
-        entities.vx = entities.speed * math.cos(angle)
-        entities.vy = entities.speed * math.sin(angle)
+            --On ajoute une velocité a x et y donc vx et vy en multipliant la vitesse au cos de l'angle pour X et le sin de l'angle pour Y
+            entities.vx = entities.speed * math.cos(angle)
+            entities.vy = entities.speed * math.sin(angle)
 
-        entities.state = const.WALK
+            entities.state = const.WALK
+        -- else
+            
+        -- end
 
     --WALK marche dans la zone sans but
     elseif entities.state == const.WALK then
@@ -73,22 +77,44 @@ function statesMachines.states(dt, entities, lstEntities)
 
         -- local distance
 
-        --On fait notre entities chercher notre heros dans son errance
-        for key, entitie in ipairs(lstEntities) do 
-            -- On verifie si il y'a un hero dans notre liste et on le recupere
-            if entitie.type == const.HERO then
-                -- on calcul la distance entre le mob et le hero entities = mob, entitie = hero
-                local distance = math.dist(entities.x, entities.y, entitie.x, entitie.y)
-                -- on verifie que le hero est dans le champs d'action de notre mob
-                if distance < entities.range then
-                    -- on change son statut et defini la cible du mob
-                    entities.state = const.PURSUIT
-                    entities.target = entitie
+        --On fait notre entities type mob chercher notre heros dans son errance
+        if entities.type == const.MOB then
+            --On boucle sur notre tableau de mob
+            for key, entitie in ipairs(lstEntities) do 
+                -- On verifie si il y'a un hero dans notre liste et on le recupere
+                if entitie.type == const.HERO then
+                    -- on calcul la distance entre le mob et le hero entities = mob, entitie = hero
+                    local distance = math.dist(entities.x, entities.y, entitie.x, entitie.y)
+                    -- on verifie que le hero est dans le champs d'action de notre mob
+                    if distance < entities.range then
+                        -- on change son statut et defini la cible du mob
+                        entities.state = const.PURSUIT
+                        entities.target = entitie
+                    end
+
                 end
 
             end
-            
         end
+
+        --On fait notre entities type Ghost errer jusqu'a sentir un humain dans sa zone
+        if entities.type == const.GHOST then
+            --On boucle sur notre tableau de ghost
+            for key, entitie in ipairs(lstEntities) do 
+                -- On verifie si il y'a un hero dans notre liste et on le recupere
+                if entitie.type == const.HERO then
+                    -- on calcul la distance entre le mob et le hero entities = mob, entitie = hero
+                    local distance = math.dist(entities.x, entities.y, entitie.x, entitie.y)
+                    -- on verifie que le hero est dans le champs d'action de notre mob
+                    if distance <= entities.range + entitie.width then
+                        -- on change son statut et defini la cible du mob
+                        entities.state = const.GROWL
+                        entities.target = entitie
+                    end
+                end
+            end
+        end
+
 
 
     --PURSUIT notre entities poursuit le hero
@@ -123,6 +149,10 @@ function statesMachines.states(dt, entities, lstEntities)
 
     --GROWL notre entities hurle
     elseif entities.state == const.GROWL then
+
+        --On fait notre mob s'aretter afin de hurler
+        entities.vx = 0
+        entities.vy = 0
 
     --ATTACK notre entities passe à l'attack
     elseif entities.state == const.ATTACK then
