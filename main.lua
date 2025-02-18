@@ -73,27 +73,3 @@ function love.keypressed(key)
         love.event.quit()
     end
 end
-
-
-
-    -- --on boucle dans notre lstentitie pour lui appliquer son update
-    -- for nb = 1, #lstEntities do
-    --     --Animation des framerate des entities dans l'entitite.update
-    --     entitie.update(dt, lstEntities[nb])
-    -- end
-
-    -- for nb = 1, #lstEntities do
-    --     -- on verifie si on a un hero
-    --     if lstEntities[nb].type == const.HERO then
-    --         --Si il existe on lui applique une "manette"
-    --         controller.update(dt, lstEntities[nb])
-    --     end
-    -- end
-
-    -- for nb = 1, #lstEntities do
-    --     -- on verifie si on a des mobs
-    --     if lstEntities[nb].type == const.MOB then
-    --         -- si oui on applique notre machine a etats sur nos entities de type mob
-    --         machine.states(lstEntities[nb])
-    --     end
-    -- end
