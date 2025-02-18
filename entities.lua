@@ -49,7 +49,7 @@ local entitie = {
             entitie.y = math.random(1, love.graphics.getHeight())
             entitie.vx = 0
             entitie.vy = 0
-            entitie.speed = love.math.random(10, 100)
+            entitie.speed = love.math.random(10, 100) / 10
             entitie.angle = 0
             entitie.images = entitieSprites.images
             entitie.type = const.MOB
@@ -61,6 +61,8 @@ local entitie = {
             entitie.state = const.NONE
             entitie.offsetX = entitie.width / 2
             entitie.offsetY = entitie.height / 2
+            entitie.range = love.math.random(10, 150)
+            entitie.target = nil
 
     end
 
