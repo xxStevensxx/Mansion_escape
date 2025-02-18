@@ -1,65 +1,93 @@
 spriteMan = require("/spriteManager")
+const = require("/constantes")
 
-local Entities = {
+local Entities = {}
+
+
+function Entities.create(type)
+
+    -- On créer notre entitie et ses attributs 
+local entitie = {
     x = 0,
     y = 0,
-    angle = 0,
-    offsetX = 0,
-    offsetY = 0,
-    height = 0,
-    width = 0,
     images = {},
+    type = const.NONE,
     nbFrame = 0,
     currentFrame = 0,
-    type = "none"
+    width = 0,
+    height = 0,
+    type = const.NONE
 }
-
-function Entities.createHero()
-    -- on crée le hero avec les attributs de Entities
-    local hero = Entities
-
-        -- on crée les heros avec les attributs de Entities
-        local hero = Entities
-        --On appel la fonction CreateSprite de notre module spriteManager
-        local heroSprites = spriteMan.CreateSprite(HERO, 2)
     
-        -- On valorise les attributs de notre hero qui sont par defaut ceux de l'entities
-        hero.images = heroSprites.images
-        hero.type = HERO
-        hero.nbFrame = heroSprites.nbFrame
-        hero.currentFrame = heroSprites.currentFrame
-        hero.width = heroSprites.width
-        hero.height = heroSprites.height
-        hero.offsetX = hero.width / 2
-        hero.offsetY = hero.height / 2
+    --On verifie le type afin de creer la bonne entitie
+    if type == const.HERO then
 
-    return hero
+        --On appel la fonction CreateSprite de notre module spriteManager
+        local entitieSprites = spriteMan.CreateSprite(type, const.HERO_SPRT, 4)
+
+        -- On valorise les attributs de notre hero
+            entitie.x = 50
+            entitie.y = 50
+            entitie.images = entitieSprites.images
+            entitie.type = const.HERO
+            entitie.nbFrame = entitieSprites.nbFrame
+            entitie.currentFrame = entitieSprites.currentFrame
+            entitie.width = entitieSprites.width
+            entitie.height = entitieSprites.height
+            entitie.type = const.HERO
+            entitie.offsetX = entitie.width / 2
+            entitie.offsetY = entitie.height / 2
+
+    --Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
+    else
+
+        --On appel la fonction CreateSprite de notre module spriteManager
+        local entitieSprites = spriteMan.CreateSprite(type, const.MOB_SPRT, 2)
+
+        -- On créer et valorise les attributs de notre ?
+            entitie.x = math.random(1, love.graphics.getWidth())
+            entitie.y = math.random(1, love.graphics.getHeight())
+            entitie.vx = 0
+            entitie.vy = 0
+            entitie.speed = love.math.random(10, 100)
+            entitie.angle = 0
+            entitie.images = entitieSprites.images
+            entitie.type = const.MOB
+            entitie.nbFrame = entitieSprites.nbFrame
+            entitie.currentFrame = entitieSprites.currentFrame
+            entitie.width = entitieSprites.width
+            entitie.height = entitieSprites.height
+            entitie.type = const.MOB
+            entitie.state = const.NONE
+            entitie.offsetX = entitie.width / 2
+            entitie.offsetY = entitie.height / 2
+
+    end
+
+    return entitie
+
 end
 
-function Entities.createMob()
-    -- on crée les mobs avec les attributs de Entities
-    local mob = Entities
-    --On appel la fonction CreateSprite de notre module spriteManager
-    local mobSprites = spriteMan.CreateSprite(MOB, 2)
-
-    -- On valorise les attributs de notre mob qui sont par defaut ceux de l'entities
-    mob.images = mobSprites.images
-    mob.type = MOB
-    mob.nbFrame = mobSprites.nbFrame
-    mob.currentFrame = mobSprites.currentFrame
-    mob.width = mobSprites.width
-    mob.height = mobSprites.height
-    mob.offsetX = mob.width / 2
-    mob.offsetY = mob.height / 2
-
-    return mob
-end
 
 
 function Entities.load()
 end
 
-function Entities.update(dt)
+function Entities.update(dt, entitie)
+
+    --boucle dans l'update qui animera les frames des entities
+    for frame = 1, #entitie.images do
+        entitie.currentFrame = entitie.currentFrame + 1 * dt
+
+        --On gere les effets de bord car avec la multiplication du dt on aura pas le max de notre boucle for
+        -- mais plus ou moins du fait des nombres flottants ex 4.33 au lieu de 4 cela pourra generer un nil pointer
+        if entitie.currentFrame >= #entitie.images + 1 then
+            entitie.currentFrame = 1
+        end
+
+    end
+
+
 end
 
 function Entities.draw()
