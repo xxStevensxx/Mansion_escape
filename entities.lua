@@ -40,7 +40,7 @@ local entitie = {
             entitie.offsetY = entitie.height / 2
 
     --Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
-    else
+    elseif type = const.MOB
 
         --On appel la fonction CreateSprite de notre module spriteManager
         local entitieSprites = spriteMan.CreateSprite(type, const.MOB_SPRT, 2)
@@ -65,6 +65,30 @@ local entitie = {
             entitie.range = love.math.random(10, 150)
             entitie.target = nil
             entitie.life = 100
+
+    else 
+        --On appel la fonction CreateSprite de notre module spriteManager
+        local entitieSprites = spriteMan.CreateSprite(type, const.GHOST_SPRT, 2)
+        -- On créer et valorise les attributs de notre ?
+            entitie.x = math.random(1, love.graphics.getWidth())
+            entitie.y = math.random(1, love.graphics.getHeight())
+            entitie.vx = 0
+            entitie.vy = 0
+            entitie.speed = love.math.random(10, 100) / 10
+            entitie.angle = 0
+            entitie.images = entitieSprites.images
+            entitie.type = const.GHOST
+            entitie.nbFrame = entitieSprites.nbFrame
+            entitie.currentFrame = entitieSprites.currentFrame
+            entitie.width = entitieSprites.width
+            entitie.height = entitieSprites.height
+            entitie.type = const.GHOST
+            entitie.state = const.NONE
+            entitie.offsetX = entitie.width / 2
+            entitie.offsetY = entitie.height / 2
+            entitie.range = love.math.random(10, 150)
+            entitie.target = nil
+            entitie.life = 10
 
     end
 
