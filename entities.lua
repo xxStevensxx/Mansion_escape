@@ -16,7 +16,8 @@ local entitie = {
     currentFrame = 0,
     width = 0,
     height = 0,
-    type = const.NONE
+    type = const.NONE,
+    life = 100
 }
     
     --On verifie le type afin de creer la bonne entitie
@@ -63,6 +64,7 @@ local entitie = {
             entitie.offsetY = entitie.height / 2
             entitie.range = love.math.random(10, 150)
             entitie.target = nil
+            entitie.life = 100
 
     end
 
