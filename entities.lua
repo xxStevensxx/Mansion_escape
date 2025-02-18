@@ -40,7 +40,7 @@ local entitie = {
             entitie.offsetY = entitie.height / 2
 
     --Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
-    elseif type = const.MOB
+    elseif type == const.MOB then
 
         --On appel la fonction CreateSprite de notre module spriteManager
         local entitieSprites = spriteMan.CreateSprite(type, const.MOB_SPRT, 2)
