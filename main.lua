@@ -27,14 +27,14 @@ function love.load()
     hero = entitie.create(const.HERO)
     table.insert(lstEntities, hero)
 
-        --On creer un ou des mob(s) et on l'ajoute dans notre liste d'entities
-    for nb = 1, 20 do
+    -- 👾👾 On creer un ou des mob(s) et on l'ajoute dans notre liste d'entities
+    for nb = 1, 5 do
         zombie = entitie.create(const.MOB)
         table.insert(lstEntities, zombie)
     end
 
-    --On creer un ou des ghost et on l'ajoute dans notre liste d'entities
-    for nb = 1, 2 do
+    -- 👻👻 On creer un ou des ghost et on l'ajoute dans notre liste d'entities
+    for nb = 1, 1 do
         ghost = entitie.create(const.GHOST)
         table.insert(lstEntities, ghost)
     end
@@ -85,7 +85,7 @@ function love.draw()
         --debug
         if entitie.state ~= nil then
             love.graphics.print(entitie.state, entitie.x + 10, entitie.y - 20)
-        end
+            end
     end
 end
 

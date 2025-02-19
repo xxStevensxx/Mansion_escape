@@ -10,7 +10,10 @@ function projectile.shoot(pX, pY, pAngle, pSpeed)
         x = pX, 
         y = pY,
         angle = pAngle, 
-        speed = pSpeed
+        speed = pSpeed,
+        offsetX = const.PRJTL_ECTOPLASM:getWidth() / 2,
+        offsetY = const.PRJTL_ECTOPLASM:getHeight() / 2,
+
     }
     table.insert(projectile.list, newProjectile)
 end
@@ -41,7 +44,7 @@ end
 -- Dessiner les projectiles
 function projectile.draw()
     for _, projectile in ipairs(projectile.list) do
-        love.graphics.draw(const.PRJTL_ECTOPLASM, projectile.x, projectile.y, 3, 2, 2)
+        love.graphics.draw(const.PRJTL_ECTOPLASM, projectile.x, projectile.y, projectile.angle, 2, 2, projectile.offsetX, projectile.offsetY)
     end
     love.graphics.print("nb de projectile "..tostring(#projectile.list), 25, 25)
 end
