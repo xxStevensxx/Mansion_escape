@@ -1,7 +1,9 @@
+local Entities = {}
+
+
 spriteMan = require("/spriteManager")
 const = require("/constantes")
 
-local Entities = {}
 
 
 function Entities.create(type)
@@ -50,7 +52,7 @@ local entitie = {
             entitie.y = math.random(1, love.graphics.getHeight())
             entitie.vx = 0
             entitie.vy = 0
-            entitie.speed = love.math.random(10, 100) / 10
+            entitie.speed = love.math.random(10, 50) / 10
             entitie.angle = 0
             entitie.images = entitieSprites.images
             entitie.type = const.MOB
@@ -65,7 +67,7 @@ local entitie = {
             entitie.range = love.math.random(10, 150)
             entitie.target = nil
             entitie.life = 100
-
+            
     else 
         --On appel la fonction CreateSprite de notre module spriteManager
         local entitieSprites = spriteMan.CreateSprite(type, const.GHOST_SPRT, 2)
@@ -86,9 +88,14 @@ local entitie = {
             entitie.state = const.NONE
             entitie.offsetX = entitie.width / 2
             entitie.offsetY = entitie.height / 2
-            entitie.range = love.math.random(10, 150)
+            entitie.range = love.math.random(95, 200)
             entitie.target = nil
             entitie.life = 10
+            --Gestion du cooldown des shoot
+            entitie.cooldown = 0
+            entitie.delay = 0.5
+            -- On clone le son afin qu'il puisse etre utilisé simultanement par plusieurs entities
+            entitie.growl = const.SND_GROWL:clone()
 
     end
 
