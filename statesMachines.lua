@@ -151,7 +151,7 @@ function statesMachines.states(dt, entities, lstEntities)
     --👂🏿👂🏿 EAR Notre entities entend du bruit
     elseif entities.state == const.EAR then
 
-        -- on les fait s'arreter pour rendre leurs mouvement plus effrayant
+        -- on les fait s'arreter pour rendre les mouvements suivant plus effrayant
         entities.vx = 0
         entities.vy = 0
 
@@ -183,7 +183,7 @@ function statesMachines.states(dt, entities, lstEntities)
                 if v.speed <= 150 then
                     v.speed = v.speed + 10 * dt
                 else
-                    v.speed = math.random(1, 100)
+                    v.speed = currentSpeed
                 end
 
                 -- on buff leur range ou rayon de detection a 400 maximum 
@@ -230,9 +230,9 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.vx = 0
             entities.vy = 0
 
-            print("target type "..tostring(entities.target.type))
-            print("target x "..tostring(entities.target.x))
-            print("ghost range "..tostring(entities.range))
+            -- print("target type "..tostring(entities.target.type))
+            -- print("target x "..tostring(entities.target.x))
+            -- print("ghost range "..tostring(entities.range))
 
             
             -- On tire en respectant le cooldown
