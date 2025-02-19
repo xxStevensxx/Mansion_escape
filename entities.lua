@@ -93,7 +93,8 @@ local entitie = {
             entitie.life = 10
             --Gestion du cooldown des shoot
             entitie.cooldown = 0
-            entitie.delay = 0.5
+            entitie.delayShoot = 0.5
+            entitie.delayGrowl = 2
             -- On clone le son afin qu'il puisse etre utilisé simultanement par plusieurs entities
             entitie.growl = const.SND_GROWL:clone()
 
