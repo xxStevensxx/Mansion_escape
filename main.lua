@@ -11,6 +11,7 @@ local const = require("/constantes")
 local controller = require("/playerConctroller")
 local machine =  require("/statesMachines")
 local projectiles = require("/projectile")
+local bubble = require("/stateBubble")
 local lstProjectiles = {}
 local lstEntities = {}
 local eye = love.graphics.newImage("/assets/eye.png")
@@ -20,9 +21,17 @@ math.randomseed(os.time())
 
 
 function love.load()
-    -- bckgrndMusic = const.MSC_MANSION
-    -- bckgrndMusic:setLooping(true)
-    -- bckgrndMusic:play()
+    -- 🎼🎼 Musique
+    bckgrndMusic = const.MSC_MANSION
+    bckgrndMusic:setLooping(true)
+    bckgrndMusic:play()
+
+    -- setMode
+    love.window.setMode( 1920, 1080, {resizable = true})
+    print("screenH"..tostring(const.SCREENHEIGHT))
+    print("screenW"..tostring(const.SCREENWIDTH))
+
+
     --On creer un hero et on l'ajoute dans notre liste d'entities
     hero = entitie.create(const.HERO)
     table.insert(lstEntities, hero)
@@ -64,7 +73,6 @@ function love.update(dt)
         end
     end
 
-
 end
 
 function love.draw()
@@ -76,11 +84,14 @@ function love.draw()
         local entitie = lstEntities[index]
         --On affiche tout nos entities sans distinction de type
         love.graphics.draw(entitie.images[math.floor(entitie.currentFrame)], entitie.x, entitie.y, entitie.angle, 3, 3, entitie.offsetX, entitie.offsetY)
-        -- on empeche le nil pointer
+        -- on empeche le nil pointer et on affiche le range
         if entitie.range ~= nil then
             --on affiche le rayon du range autours du mob
             love.graphics.circle("line", entitie.x, entitie.y, entitie.range)
         end
+
+        -- stateBubble
+        bubble.state(entitie)
 
         --debug
         if entitie.state ~= nil then

@@ -25,7 +25,11 @@ local constantes = {
      SCREENWIDTH = love.graphics.getWidth(),
      SCREENHEIGHT = love.graphics.getHeight(),
      -- Constantes de projectile
-     PRJTL_ECTOPLASM = love.graphics.newImage("/assets/ectoplasm.png")
+     PRJTL_ECTOPLASM = love.graphics.newImage("/assets/ectoplasm.png"),
+     -- Constantes State bubble
+     BUBBLE_GROWL = love.graphics.newImage("/assets/growl.png"),
+     BUBBLE_EAR = love.graphics.newImage("/assets/colere.png"),
+     BUBBLE_PURSUIT = love.graphics.newImage("/assets/eye.png")
     
 }
 
