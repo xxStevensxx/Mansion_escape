@@ -40,6 +40,7 @@ local entitie = {
             entitie.type = const.HERO
             entitie.offsetX = entitie.width / 2
             entitie.offsetY = entitie.height / 2
+            entitie.life = 100
 
     --Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
     elseif type == const.MOB then
@@ -90,7 +91,7 @@ local entitie = {
             entitie.offsetY = entitie.height / 2
             entitie.range = love.math.random(95, 200)
             entitie.target = nil
-            entitie.life = 10
+            entitie.life = 50
             --Gestion du cooldown des shoot
             entitie.cooldown = 0
             entitie.delayShoot = 0.5

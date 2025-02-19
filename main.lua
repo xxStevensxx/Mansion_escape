@@ -12,6 +12,7 @@ local controller = require("/playerConctroller")
 local machine =  require("/statesMachines")
 local projectiles = require("/projectile")
 local bubble = require("/stateBubble")
+local life = require("/life")
 local lstProjectiles = {}
 local lstEntities = {}
 local eye = love.graphics.newImage("/assets/eye.png")
@@ -92,6 +93,14 @@ function love.draw()
 
         -- stateBubble
         bubble.state(entitie)
+
+        -- Life entitie, pdv, posX, posY
+        if entitie.type == const.HERO then
+            love.graphics.print(entitie.type)
+            love.graphics.print("pdv "..tostring(entitie.life), 400, 400)
+            life.show(entitie.life, 10, 10)
+        end
+
 
         --debug
         if entitie.state ~= nil then

@@ -217,7 +217,7 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.state = const.PURSUIT
         -- sinon on l áttaque et lui retire de la vie
          else
-            print("life --")
+            entities.target.life = entities.target.life - 1
          end
          --👻
         elseif entities.type == const.GHOST then
