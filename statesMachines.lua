@@ -83,7 +83,7 @@ function statesMachines.states(dt, entities, lstEntities)
 
         -- local distance
 
-        --On fait notre entities type mob chercher notre heros dans son errance
+        -- 👾👾 On fait notre entities type mob chercher notre heros dans son errance
         if entities.type == const.MOB then
             --On boucle sur notre tableau de mob
             for key, entitie in ipairs(lstEntities) do 
@@ -103,18 +103,17 @@ function statesMachines.states(dt, entities, lstEntities)
             end
         end
 
-        --On fait notre entities type Ghost errer jusqu'a sentir un humain dans sa zone
+        -- 👻👻 On fait notre entities type Ghost errer jusqu'a sentir un humain dans sa zone
         if entities.type == const.GHOST then
             --On boucle sur notre tableau de ghost
             for key, entitie in ipairs(lstEntities) do 
                 -- On verifie si il y'a un hero dans notre liste et on le recupere
                 if entitie.type == const.HERO then
-                    -- on calcul la distance entre le mob et le hero entities = mob, entitie = hero
+                    -- on calcul la distance entre le mob et le hero 🔥🔥entities = mob, 💧💧entitie = hero
                     local distance = math.dist(entities.x, entities.y, entitie.x, entitie.y)
                     -- on verifie que le hero est dans le champs d'action de notre mob
                     if distance <= entities.range + entitie.width then
-                        -- on change son statut et defini la cible du mob et on ajoute un timer
-                        entities.cooldown = entities.cooldown
+                        -- on change son statut et defini la cible du mob
                         entities.target = entitie
                         entities.state = const.ATTACK
                     end
@@ -152,6 +151,13 @@ function statesMachines.states(dt, entities, lstEntities)
     --👂🏿👂🏿 EAR Notre entities entend du bruit
     elseif entities.state == const.EAR then
 
+        -- on les fait s'arreter pour rendre leurs mouvement plus effrayant
+        entities.vx = 0
+        entities.vy = 0
+
+        --on les fait changer de statut 
+        entities.state = const.NONE
+
     --😱😱 GROWL notre entities hurle
     elseif entities.state == const.GROWL then
         --le GROWL est un buff temporaire de tout les mobs autres que les fantomes
@@ -176,17 +182,30 @@ function statesMachines.states(dt, entities, lstEntities)
                 -- on buff leur vitesse a maximum 150
                 if v.speed <= 150 then
                     v.speed = v.speed + 10 * dt
+                else
+                    v.speed = math.random(1, 100)
                 end
 
-                -- on buff leur range ou rayon de detection a 200 maximum 
-                if v.range <= 100 then
-                    v.speed = v.speed + 10 * dt
+                -- on buff leur range ou rayon de detection a 400 maximum 
+                if v.range <= 400 then
+                    v.range = v.range + 200 * dt
+                else
+                    v.range = currentRange
                 end
 
-
-                v.range = v.range + 200
+                -- On change leurs status
+                v.state = const.EAR
             end
+
+            if entities.cooldown >= entities.delayGrowl then
+                entities.state = const.NONE
+            end
+    
+            -- v.state = const.EAR
         end
+
+
+
 
 
     --🤺🤺 ATTACK notre entities passe à l'attack
@@ -202,7 +221,7 @@ function statesMachines.states(dt, entities, lstEntities)
          end
          --👻
         elseif entities.type == const.GHOST then
-            -- On decremente notre cooldown
+            -- On incremente  notre cooldown jusqu'a atteindre le delay
             entities.cooldown = entities.cooldown + dt
             -- on lui met l'angle vers notre hero pour la visé
             local angleVersHero = math.angle(entities.x, entities.y, entities.target.x, entities.target.y)
@@ -217,9 +236,9 @@ function statesMachines.states(dt, entities, lstEntities)
 
             
             -- On tire en respectant le cooldown
-            if entities.cooldown >= entities.delay then
+            if entities.cooldown >= entities.delayShoot then
                 --param X, Y, Angle, Speed
-                lstProjectiles = projectile.shoot(entities.x, entities.y, entities.angle, 5, lstProjectiles)
+                lstProjectiles = projectile.shoot(entities.x, entities.y, entities.angle, 1, lstProjectiles)
                 -- print("👻👻💀")
                 -- on remet le cooldown a zero sinon il se transforme en sulfateuse
                 entities.cooldown = 0
@@ -260,19 +279,3 @@ end
 
 
 return statesMachines
-
-
-
--- if lstEntities ~= nil then
---     for nb = #lstEntities, 1, -1 do
---        --On formate notre variable
---        entities = lstEntities[nb]
---        -- on s'assure que c'est un mob avec un cooldown donc le ghost
---        if entities.cooldown ~= nil and entities.delay ~= nil then
---            -- On gere le cooldown de nos shoot
---            if entities.cooldown > 0 then
---                entities.cooldown = entities.cooldown - dt
---            end
---        end
---     end
---    end
