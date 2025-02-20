@@ -5,8 +5,10 @@ spriteMan = require("/spriteManager")
 const = require("/constantes")
 
 
-
-function Entities.create(type)
+-- param 1 type d'ennemi
+-- param 2 position x du spawner
+-- param 3 position y du spawner
+function Entities.create(type, pX,pY)
 
     -- On créer notre entitie et ses attributs 
 local entitie = {}
@@ -20,16 +22,25 @@ local entitie = {}
         -- On valorise les attributs de notre hero
             entitie.x = 50
             entitie.y = 50
+            entitie.angle = 0
+            entitie.angleShoot = 0
+            entitie.speed = 120
             entitie.images = entitieSprites.images
             entitie.type = const.HERO
             entitie.nbFrame = entitieSprites.nbFrame
             entitie.currentFrame = entitieSprites.currentFrame
+            entitie.currentFrameOBJ = 1
             entitie.width = entitieSprites.width
             entitie.height = entitieSprites.height
             entitie.type = const.HERO
             entitie.offsetX = entitie.width / 2
             entitie.offsetY = entitie.height / 2
             entitie.life = 100
+            entitie.inventory = {}
+            entitie.range = 250
+            entitie.cooldownHero = 0
+            entitie.delayBow = 0.8
+            entitie.bowShoot = const.SND_SHOOT_BOW:clone()
 
     -- 👾👾 Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
     elseif type == const.MOB then
@@ -38,8 +49,8 @@ local entitie = {}
         local entitieSprites = spriteMan.CreateSprite(type, const.MOB_SPRT, 2)
 
         -- On créer et valorise les attributs de notre ?
-            entitie.x = math.random(1, love.graphics.getWidth())
-            entitie.y = math.random(1, love.graphics.getHeight())
+            entitie.x = pX
+            entitie.y = pY
             entitie.vx = 0
             entitie.vy = 0
             entitie.speed = love.math.random(10, 50)
@@ -68,8 +79,8 @@ local entitie = {}
         -- 👻👻 On appel la fonction CreateSprite de notre module spriteManager
         local entitieSprites = spriteMan.CreateSprite(type, const.GHOST_SPRT, 2)
         -- On créer et valorise les attributs de notre ?
-            entitie.x = math.random(1, love.graphics.getWidth())
-            entitie.y = math.random(1, love.graphics.getHeight())
+            entitie.x = pX
+            entitie.y = pY 
             entitie.vx = 0
             entitie.vy = 0
             entitie.speed = love.math.random(10, 100) / 10
