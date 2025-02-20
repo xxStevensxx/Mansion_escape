@@ -9,20 +9,9 @@ const = require("/constantes")
 function Entities.create(type)
 
     -- On créer notre entitie et ses attributs 
-local entitie = {
-    x = 0,
-    y = 0,
-    images = {},
-    type = const.NONE,
-    nbFrame = 0,
-    currentFrame = 0,
-    width = 0,
-    height = 0,
-    type = const.NONE,
-    life = 100
-}
+local entitie = {}
     
-    --On verifie le type afin de creer la bonne entitie
+    -- 🐱‍🏍🐱‍🏍 On verifie le type afin de creer la bonne entitie
     if type == const.HERO then
 
         --On appel la fonction CreateSprite de notre module spriteManager
@@ -42,7 +31,7 @@ local entitie = {
             entitie.offsetY = entitie.height / 2
             entitie.life = 100
 
-    --Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
+    -- 👾👾 Dans le cas ou on a que deux type on ajoute juste un sinon a partir de trois type d'entities on ajoutera un elseif
     elseif type == const.MOB then
 
         --On appel la fonction CreateSprite de notre module spriteManager
@@ -53,7 +42,7 @@ local entitie = {
             entitie.y = math.random(1, love.graphics.getHeight())
             entitie.vx = 0
             entitie.vy = 0
-            entitie.speed = love.math.random(10, 50) / 10
+            entitie.speed = love.math.random(10, 50)
             entitie.angle = 0
             entitie.images = entitieSprites.images
             entitie.type = const.MOB
@@ -68,9 +57,15 @@ local entitie = {
             entitie.range = love.math.random(10, 150)
             entitie.target = nil
             entitie.life = 100
+            entitie.hitDamage = const.SND_DMG_MOBS:clone()
+            entitie.cooldownMob = 0
+            entitie.cooldownBuff = 0
+            entitie.delayHit = 0.5
+            entitie.delay_buff = 0
+            entitie.buff = false
             
     else 
-        --On appel la fonction CreateSprite de notre module spriteManager
+        -- 👻👻 On appel la fonction CreateSprite de notre module spriteManager
         local entitieSprites = spriteMan.CreateSprite(type, const.GHOST_SPRT, 2)
         -- On créer et valorise les attributs de notre ?
             entitie.x = math.random(1, love.graphics.getWidth())
@@ -89,15 +84,16 @@ local entitie = {
             entitie.state = const.NONE
             entitie.offsetX = entitie.width / 2
             entitie.offsetY = entitie.height / 2
-            entitie.range = love.math.random(95, 200)
+            entitie.range = love.math.random(105, 250)
             entitie.target = nil
             entitie.life = 50
             --Gestion du cooldown des shoot
-            entitie.cooldown = 0
+            entitie.cooldownGhost = 0
             entitie.delayShoot = 0.5
             entitie.delayGrowl = 2
             -- On clone le son afin qu'il puisse etre utilisé simultanement par plusieurs entities
             entitie.growl = const.SND_GROWL:clone()
+            entitie.shooEctoplasm = const.SND_SHOOT_ECTOPLASM:clone()
 
     end
 
