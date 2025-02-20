@@ -31,8 +31,8 @@ function statesMachines.states(dt, entities, lstEntities)
             local angle = math.angle(entities.x, entities.y, love.math.random(const.SCREENWIDTH), love.math.random(const.SCREENHEIGHT))
 
             --On ajoute une velocité a x et y donc vx et vy en multipliant la vitesse au cos de l'angle pour X et le sin de l'angle pour Y
-            entities.vx = entities.speed * math.cos(angle)
-            entities.vy = entities.speed * math.sin(angle)
+            entities.vx = entities.speed * math.cos(angle) 
+            entities.vy = entities.speed * math.sin(angle) 
 
             entities.state = const.WALK
 
@@ -270,7 +270,7 @@ function statesMachines.states(dt, entities, lstEntities)
             if entities.cooldownGhost >= entities.delayShoot then
                 --param X, Y, Angle, Speed
                 entities.shooEctoplasm:play()
-                projectile.shoot(entities.x, entities.y, entities.angle, 5)
+                projectile.shoot(entities.x, entities.y, entities.angle, 1, entities.type)
                 -- on remet le cooldown a zero sinon il se transforme en sulfateuse
                 entities.cooldownGhost = 0
             end
