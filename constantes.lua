@@ -3,9 +3,11 @@ local constantes = {
      -- 🎼🎼 music
      MSC_MANSION = love.audio.newSource("/sounds/lavanville_sinister_remix_16bit.wav", "stream"),
      -- 🔊🔊 sound effect
-     SND_SHOOT = 0,
+     SND_SHOOT_ECTOPLASM = love.audio.newSource("/sounds/Fire1.wav", "static"),
      SND_DESTRUCTION = 0,
-     SND_GROWL = love.audio.newSource("/sounds/ghost_growl.wav", "static"),
+     SND_GROWL = love.audio.newSource("/sounds/Darkness5.wav", "static"),
+     SND_DMG_MOBS = love.audio.newSource("/sounds/Damage3.wav", "static"),
+     SND_DMG_SHOOT = love.audio.newSource("/sounds/Damage4.wav", "static"),
      -- 💻💻 Constantes de machine a etat
      NONE = "none",
      WALK = "walk",
@@ -32,8 +34,7 @@ local constantes = {
      BUBBLE_PURSUIT = love.graphics.newImage("/assets/eye.png"),
      -- 💖💖 Constante life
      LEFT_HEART = love.graphics.newImage("/assets/leftHeart.png"),
-     RIGHT_HEART = love.graphics.newImage("/assets/rightHeart.png")
-    
+     RIGHT_HEART = love.graphics.newImage("/assets/rightHeart.png")    
 }
 
 --si besoin on ajoutera de nouvelles constantes

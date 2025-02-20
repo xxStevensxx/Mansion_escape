@@ -1,9 +1,7 @@
 local statesMachines = {}
 
-
 local const = require("/constantes")
 local projectile = require("/projectile")
-local lstProjectiles = {}
 math.randomseed(os.time())
 
 
@@ -29,7 +27,6 @@ function statesMachines.states(dt, entities, lstEntities)
     -- 🧭🧭 CHANGEDIR applique un angle et une velocité a notre entité afin qu'il change de direction
     elseif entities.state == const.CHANGEDIR then
 
-        -- if entities.type == const.MOB then
             --Le vecteur A donc x1 et x2 va du point A vers, B x2, y2 -> (e.x, e.y) → (scrnW,scrnH)
             local angle = math.angle(entities.x, entities.y, love.math.random(const.SCREENWIDTH), love.math.random(const.SCREENHEIGHT))
 
@@ -38,9 +35,6 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.vy = entities.speed * math.sin(angle)
 
             entities.state = const.WALK
-        -- else
-            
-        -- end
 
     -- 🏃🏿‍♂️🏃🏿‍♂️ WALK marche dans la zone sans but
     elseif entities.state == const.WALK then
@@ -81,7 +75,6 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.state = const.CHANGEDIR
         end
 
-        -- local distance
 
         -- 👾👾 On fait notre entities type mob chercher notre heros dans son errance
         if entities.type == const.MOB then
@@ -121,6 +114,22 @@ function statesMachines.states(dt, entities, lstEntities)
             end
         end
 
+        -- Gestion du buff par le ghost
+        if entities.delay_buff ~= 0 and entities.buff == true then
+            -- on decremente notre timer
+            entities.cooldownMob = entities.cooldownMob + dt
+            -- On verifiie que notre delai de buff est atteint
+            if entities.cooldownMob >= entities.delay_buff then
+                -- Debuff en cas de buff maximum
+                    entities.range = love.math.random(10, 150)
+                    entities.speed = love.math.random(10, 50)
+                    entities.cooldownMob = 0   
+                    entities.buff = false   
+            end
+        end
+
+        
+
     -- 🏃🏿‍♂️🏃🏿‍♀️ PURSUIT notre entities poursuit le hero
     elseif entities.state == const.PURSUIT then
 
@@ -148,10 +157,24 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.vy = entities.speed * math.sin(angle)
         end
 
+        -- Gestion du buff par le ghost
+        if entities.delay_buff ~= 0 and entities.buff == true then
+            -- on decremente notre timer
+            entities.cooldownMob = entities.cooldownMob + dt
+            -- On verifiie que notre delai de buff est atteint
+            if entities.cooldownMob >= entities.delay_buff then
+                -- Debuff en cas de buff maximum
+                    entities.range = love.math.random(10, 150)
+                    entities.speed = love.math.random(10, 50)
+                    entities.cooldownMob = 0   
+                    entities.buff = false   
+            end
+        end
+
     --👂🏿👂🏿 EAR Notre entities entend du bruit
     elseif entities.state == const.EAR then
 
-        -- on les fait s'arreter pour rendre les mouvements suivant plus effrayant
+        -- on les fait s'arreter et  pour rendre les mouvements suivant plus effrayant
         entities.vx = 0
         entities.vy = 0
 
@@ -163,7 +186,7 @@ function statesMachines.states(dt, entities, lstEntities)
         --le GROWL est un buff temporaire de tout les mobs autres que les fantomes
 
         -- on incremente notre cooldown
-        entities.cooldown = entities.cooldown + dt
+        entities.cooldownGhost = entities.cooldownGhost + dt
 
         --On fait notre mob s'aretter afin de hurler
         entities.vx = 0
@@ -176,37 +199,43 @@ function statesMachines.states(dt, entities, lstEntities)
         for k, v in ipairs(lstEntities) do
             if v.type == const.MOB then
                 -- on stock les attributs a buffer pour les reinitialiser apres
-                local currentRange = v.range
-                local currentSpeed = v.speed
+                local currentRange = nil
+                local currentSpeed = nil
+
+                -- On save la valeur une seul fois elle ne bougera plus afin de la restauré apres le buff 
+                if currentRange == nil then
+                    currentRange = v.range
+                end
+
+                -- On save la valeur une seul fois elle ne bougera plus afin de la restauré apres le buff 
+                if currentSpeed == nil then
+                    currentSpeed = v.speed
+                end
 
                 -- on buff leur vitesse a maximum 150
                 if v.speed <= 150 then
-                    v.speed = v.speed + 10 * dt
-                else
-                    v.speed = currentSpeed
+                    v.speed = v.speed + 15 * dt
                 end
 
                 -- on buff leur range ou rayon de detection a 400 maximum 
                 if v.range <= 400 then
-                    v.range = v.range + 200 * dt
-                else
-                    v.range = currentRange
+                    v.range = v.range + 100 * dt
                 end
 
+                -- on modifie la limite de temps buff et on precisae qu'il est buffé
+                v.delay_buff = love.math.random(4, 8)
+                v.buff = true
                 -- On change leurs status
                 v.state = const.EAR
             end
 
-            if entities.cooldown >= entities.delayGrowl then
+            -- a la fin du growl on repasse les mob en none pour qu'ils puissent se mettre a nous poursuivre
+            if entities.cooldownGhost >= entities.delayGrowl then
                 entities.state = const.NONE
             end
     
             -- v.state = const.EAR
         end
-
-
-
-
 
     --🤺🤺 ATTACK notre entities passe à l'attack
     elseif entities.state == const.ATTACK then
@@ -215,14 +244,20 @@ function statesMachines.states(dt, entities, lstEntities)
         -- On verifie que si notre hero se deplace on se remette à le poursuivre
          if math.dist(entities.x, entities.y, entities.target.x, entities.target.y) > 5 then
             entities.state = const.PURSUIT
-        -- sinon on l áttaque et lui retire de la vie
-         else
-            entities.target.life = entities.target.life - 1
+
+         else  -- sinon on l áttaque et lui retire de la vie
+            entities.cooldownMob = entities.cooldownMob + dt
+
+            if entities.cooldownMob >= entities.delayHit then
+                entities.hitDamage:play()
+                entities.target.life = entities.target.life - 1
+                entities.cooldownMob = 0
+            end
          end
          --👻
         elseif entities.type == const.GHOST then
             -- On incremente  notre cooldown jusqu'a atteindre le delay
-            entities.cooldown = entities.cooldown + dt
+            entities.cooldownGhost = entities.cooldownGhost + dt
             -- on lui met l'angle vers notre hero pour la visé
             local angleVersHero = math.angle(entities.x, entities.y, entities.target.x, entities.target.y)
             entities.angle = angleVersHero
@@ -230,30 +265,34 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.vx = 0
             entities.vy = 0
 
-            -- print("target type "..tostring(entities.target.type))
-            -- print("target x "..tostring(entities.target.x))
-            -- print("ghost range "..tostring(entities.range))
 
-            
             -- On tire en respectant le cooldown
-            if entities.cooldown >= entities.delayShoot then
+            if entities.cooldownGhost >= entities.delayShoot then
                 --param X, Y, Angle, Speed
-                lstProjectiles = projectile.shoot(entities.x, entities.y, entities.angle, 1, lstProjectiles)
-                -- print("👻👻💀")
+                entities.shooEctoplasm:play()
+                projectile.shoot(entities.x, entities.y, entities.angle, 5)
                 -- on remet le cooldown a zero sinon il se transforme en sulfateuse
-                entities.cooldown = 0
+                entities.cooldownGhost = 0
             end
 
             if math.dist(entities.x, entities.y, entities.target.x, entities.target.y) > entities.range + entities.target.width then
                 -- on remet notre cooldown a zero
-                entities.cooldown = 0
+                entities.cooldownGhost = 0
                 -- on change de statut
                 entities.state = const.GROWL
+                entities.angle = 0
             -- sinon on l áttaque et lui retire de la vie
             end
 
         end
 
+        --si il est buff on debuff et on reinitilaise les stat en random au min et maximum de base
+        if entities.buff == true then
+            entities.range = love.math.random(10, 150)
+            entities.speed = love.math.random(10, 50)
+            entities.buff = false
+        end
+    
     end
     
 end
@@ -261,7 +300,7 @@ end
 function statesMachines.update(dt, entities)
 
     --On gere la vie des projectile ici
-    projectile.update(dt)
+    projectile.update(dt, entities)
 
     -- On ajoute de la velocité au deplacement de nos mobs et ghost
     for k, value in ipairs(entities) do

@@ -28,17 +28,14 @@ function love.load()
     bckgrndMusic:play()
 
     -- setMode
-    love.window.setMode( 1920, 1080, {resizable = true})
-    print("screenH"..tostring(const.SCREENHEIGHT))
-    print("screenW"..tostring(const.SCREENWIDTH))
-
+    -- love.window.setMode( 1920, 1080, {resizable = true})
 
     --On creer un hero et on l'ajoute dans notre liste d'entities
     hero = entitie.create(const.HERO)
     table.insert(lstEntities, hero)
 
     -- 👾👾 On creer un ou des mob(s) et on l'ajoute dans notre liste d'entities
-    for nb = 1, 5 do
+    for nb = 1, 2 do
         zombie = entitie.create(const.MOB)
         table.insert(lstEntities, zombie)
     end
@@ -103,8 +100,9 @@ function love.draw()
 
 
         --debug
-        if entitie.state ~= nil then
+        if entitie.state ~= nil and entitie.buff ~= nil then
             love.graphics.print(entitie.state, entitie.x + 10, entitie.y - 20)
+            love.graphics.print(tostring(entitie.buff), entitie.x + 30, entitie.y - 50)
             end
     end
 end

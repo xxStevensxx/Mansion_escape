@@ -19,7 +19,7 @@ function projectile.shoot(pX, pY, pAngle, pSpeed)
 end
 
 -- Mettre à jour les projectiles
-function projectile.update(dt)
+function projectile.update(dt, entities)
     for nb = #projectile.list, 1, -1 do
         local p = projectile.list[nb]
 
@@ -34,6 +34,21 @@ function projectile.update(dt)
         if p.x < 0 or p.x > const.SCREENWIDTH or p.y < 0 or p.y > const.SCREENHEIGHT then
             table.remove(projectile.list, nb) 
         else
+            -- il nous touche donc on perd de la vie
+            for nb = #entities, 1, -1 do
+                --on formate notre code pour plus de lisibilité
+                local cible = entities[nb]
+                -- on verifie qu'il vise bien notre hero
+                if cible.type == const.HERO then
+                    -- si le projectile est a plus de la moitié de la surface du hero alors ca touche
+                     if math.dist(p.x, p.y, cible.x, cible.y) < cible.width / 2 then
+                        -- on joue le son damage
+                        const.SND_DMG_SHOOT:play()
+                        cible.life = cible.life - 1
+                        table.remove(projectile.list, nb)
+                     end
+                end
+            end
             
         end
 
