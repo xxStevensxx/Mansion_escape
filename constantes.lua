@@ -9,6 +9,7 @@ local constantes = {
      SND_GROWL = love.audio.newSource("/sounds/Darkness5.wav", "static"),
      SND_DMG_MOBS = love.audio.newSource("/sounds/Damage3.wav", "static"),
      SND_DMG_SHOOT = love.audio.newSource("/sounds/Damage4.wav", "static"),
+     SND_CANCEL = love.audio.newSource("/sounds/Cancel1.wav", "static"),
      -- 💻💻 Constantes de machine a etat
      NONE = "none",
      WALK = "walk",
@@ -47,7 +48,12 @@ local constantes = {
           love.graphics.newImage("/assets//bow3.png")
      },
      -- 🚩🚩 Autre
-     POINTEUR_SHOOT = love.graphics.newImage("/assets/pointeur.png")
+     POINTEUR_SHOOT = love.graphics.newImage("/assets/pointeur.png"),
+     PANEL_ONE = love.graphics.newImage("/assets/panel1.png"),
+     PANEL_PAUSE = love.graphics.newImage("/assets/panel2.png"),
+     PANEL_INVENTORY = love.graphics.newImage("/assets/panel1.png"),
+     TEXT_T = "hello world!",
+     FONT = love.graphics.newFont("/font/NameismudPersonalUseRegular-d9m5x.ttf")
           
 }
 
