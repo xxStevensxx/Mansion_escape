@@ -10,7 +10,7 @@ local entitie = require("/entities")
 local const = require("/constantes")
 local controller = require("/playerConctroller")
 local machine =  require("/statesMachines")
-local projectiles = require("/projectile")
+-- local projectiles = require("/projectile")
 local bubble = require("/stateBubble")
 local life = require("/life")
 local spawner = require("/spawner")
@@ -18,7 +18,7 @@ local game = require("/game")
 local panel = nil
 local groupe = nil
 local text = nil
-local lstProjectiles = {}
+-- local lstProjectiles = {}
 local lstEntities = {}
 local eye = love.graphics.newImage("/assets/eye.png")
 local pause = false
@@ -56,7 +56,7 @@ function love.load()
 end
 
 function love.update(dt)
-    -- gestion du GUI du jeu
+    -- gestion de la pause du jeu
     pause = game.isPaused()
 
     if pause  == false then
@@ -126,7 +126,9 @@ function love.draw()
             -- love.graphics.print(entitie.type)
             -- love.graphics.print("pdv "..tostring(entitie.life), 400, 400)
             love.graphics.draw(const.OBJ_BOW[entitie.currentFrameOBJ], entitie.x + entitie.width, entitie.y + entitie.height, entitie.angleShoot, 1, 1, const.OBJ_BOW[1]:getWidth() / 2, const.OBJ_BOW[1]:getHeight() / 2)
-            -- life.show(entitie.life, 10, 10)
+            life.show(entitie.life, 10, 10)
+        elseif entitie.type ~= const.HERO then
+            life.show(entitie.life, entitie.x - entitie.offsetX, entitie.y - 30, 0, 4, 4)
         end
 
         --debug

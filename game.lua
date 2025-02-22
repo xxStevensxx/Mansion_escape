@@ -45,6 +45,7 @@ function game.draw()
         end
     else
         love.graphics.draw(const.PANEL_INVENTORY, 15 , const.SCREENHEIGHT - const.PANEL_INVENTORY:getHeight() - 15)
+        
     end
 end
 

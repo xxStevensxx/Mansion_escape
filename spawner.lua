@@ -1,6 +1,5 @@
 local spawner = {}
 
-
 spawner.list = {}
 spawner.entities = {}
 
@@ -25,10 +24,7 @@ function spawner.spawner()
             y = love.math.random(const.SPWN_GRAVE:getHeight(), const.SCREENHEIGHT - const.SPWN_GRAVE:getHeight())
         }
     end
-    -- debug
-    print("x "..tostring(spawner.list[1].x))
-    print("y "..tostring(spawner.list[1].y))
-    print("list spawner "..tostring(#spawner.list))
+    
 end
 
 -- Fait spawner les ennemies
@@ -45,13 +41,9 @@ function spawner.spawn()
     -- 🎲🎲 on lance nos dé pour placer un ennemi sur un spawner en fonciton du resultat
     local dice = love.math.random(1, #spawner.list)
 
-
     table.insert(spawner.entities, entitie.create(typeEnnemies[diceMob], spawner.list[dice].x, spawner.list[dice].y))
 
-
-    -- debug
-    print("entities "..tostring(#spawner.entities))
-    if spawner.entities ~= nil or spawner.entities ~= 0 then
+    if  spawner.entities ~= 0 then
         for i = 1, #spawner.entities do 
             print(spawner.entities[i].type)
         end

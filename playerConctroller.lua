@@ -51,13 +51,3 @@ function playercontroller.update(dt, entitie)
 end
 
 return playercontroller
-
-
---  -- On tire en respectant le cooldown
---  if entities.cooldownGhost >= entities.delayShoot then
---     --param X, Y, Angle, Speed
---     entities.shooEctoplasm:play()
---     projectile.shoot(entities.x, entities.y, entities.angle, 1, entities.type)
---     -- on remet le cooldown a zero sinon il se transforme en sulfateuse
---     entities.cooldownGhost = 0
--- end
