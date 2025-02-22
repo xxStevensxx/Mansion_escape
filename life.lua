@@ -19,9 +19,9 @@ function life.show(pdv, posX, posY)
 
         if impair then
             --On DESSINE nos image en fonction du nb de pv pairs ou impairs pour l'affichage gauche ou droite
-            love.graphics.draw(const.LEFT_HEART, posx , posy, 0, 2, 2)
+            love.graphics.draw(const.LEFT_HEART, posx , posy, 0, 0.5, 0.5)
         else
-            love.graphics.draw(const.RIGHT_HEART, posx, posy, 0, 2, 2)
+            love.graphics.draw(const.RIGHT_HEART, posx, posy, 0, 0.5, 0.5)
         end
 
         -- si le nb de pv est pairs on decale la position du coeur de sa largeur 
