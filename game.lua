@@ -80,7 +80,7 @@ function game.switchWeapon(lstEntities, key)
         
                 -- Définit l'arme actuelle
                 hero.selectedWeapon = hero.inventory[hero.currentWpn]
-                print("Nouvelle arme équipée :", hero.selectedWeapon.name)
+                -- print("Nouvelle arme équipée :", hero.selectedWeapon.name)
             end
         end
 

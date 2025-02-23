@@ -98,7 +98,6 @@ function projectile.draw()
             love.graphics.draw(const.PRJTL_ARROW, projectile.x, projectile.y, projectile.angle, 1, 1, projectile.offsetX, projectile.offsetY)
         end
     end
-    -- love.graphics.print("nb de projectile "..tostring(#projectile.list), 25, 25)
 end
 
 return projectile

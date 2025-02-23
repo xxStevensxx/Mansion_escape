@@ -149,12 +149,6 @@ function love.draw()
         elseif entitie.type ~= const.HERO then
             life.show(entitie.life, entitie.x - entitie.offsetX, entitie.y - 30, 0, 4, 4)
         end
-
-        --debug
-        if entitie.state ~= nil and entitie.buff ~= nil then
-            love.graphics.print(entitie.state, entitie.x + 10, entitie.y - 20)
-            love.graphics.print(tostring(entitie.buff), entitie.x + 30, entitie.y - 50)
-            end
     end
 
 end
