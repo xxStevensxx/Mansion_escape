@@ -2,6 +2,9 @@ local statesMachines = {}
 
 local const = require("/constantes")
 local projectile = require("/projectile")
+local game = require("/game")
+
+local counter = 0
 math.randomseed(os.time())
 
 --Love general math
@@ -18,8 +21,18 @@ function statesMachines.states(dt, entities, lstEntities)
 
     -- 💀💀 si nos MOBS, GHOST ou HERO sont dead on les supprime
     for index = #lstEntities, 1, -1 do
+        -- on formate notre var pour la lisibilité
+        local entitie = lstEntities[index]
         -- MOB ET GHOST or HERO
-        if lstEntities[index].rem == true or (lstEntities[index].life <= 0 and lstEntities[index].type == const.HERO) then
+        if entitie.rem == true or (entitie.life <= 0 and entitie.type == const.HERO) then
+            -- si c'est le hero qui est mort on change le statut des mobs
+            if entitie.type == const.HERO then
+                for _, ennemie in ipairs(lstEntities) do
+                    const.SND_DEFEAT:play()
+                    ennemie.state = const.NONE 
+                    game.dead(true)
+                end
+            end
             table.remove(lstEntities, index)
         end
     end
@@ -174,12 +187,12 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.cooldownGhost = entities.cooldownGhost + dt
             -- on fait le GHOST nous viser
             local angleVersHero = math.angle(entities.x, entities.y, entities.target.x, entities.target.y)
-            entities.angle = angleVersHero
+            -- entities.angle = angleVersHero
             entities.vx, entities.vy = 0, 0
             -- on time pour eviter les effets sulfateuse
             if entities.cooldownGhost >= entities.delayShoot then
                 entities.shooEctoplasm:play()
-                projectile.shoot(entities.x, entities.y, entities.angle, 1, entities.type)
+                projectile.shoot(entities.x, entities.y, angleVersHero, 1, entities.type)
                 entities.cooldownGhost = 0
             end
             -- si notre hero sort du champs du GHOST alors il Hurle(alerte et buff les mobs)
@@ -199,6 +212,10 @@ function statesMachines.states(dt, entities, lstEntities)
     elseif entities.state == const.DEATH then
         entities.vx, entities.vy = 0, 0
         entities.rem = true
+        -- on incremente notre counter
+        counter = counter + 1
+        -- on voit si on peut passer en phase final
+        game.finalPhase(counter, lstEntities)
     end
 end
 

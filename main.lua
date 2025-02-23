@@ -21,8 +21,8 @@ local groupe = nil
 local text = nil
 -- local lstProjectiles = {}
 local lstEntities = {}
-local eye = love.graphics.newImage("/assets/eye.png")
 local pause = false
+local win = false
 
 love.graphics.setDefaultFilter("nearest")
 math.randomseed(os.time())
@@ -68,7 +68,8 @@ function love.update(dt)
     -- 🪓🪓 gestion du changement de l'arme du hero
     game.switchWeapon(hero)
 
-    if pause  == false then
+
+    if pause == false and win == false then
         love.audio.play(bckgrndMusic)
 
         -- 🏡👻👾 update du spawner on fait spawn les ennemis
@@ -110,9 +111,15 @@ end
 function love.draw()
     for nb = 1, #item.list do
         if item.list[nb].pick == false then
-            love.graphics.draw(item.list[nb].images[1], item.list[nb].x, item.list[nb].y, 0, 1, 1, item.list[nb].width / 2, item.list[nb].height / 2)
+
+            -- animation pulsation pour rendre les armes au sol plus visible
+            local pulseFrequency = 2     -- Fréquence de l'oscillation (en radians par seconde)
+            local pulseAmplitude = 0.2   -- Amplitude de variation (20% d'augmentation ou de diminution)
+            local scale = 1 + pulseAmplitude * math.cos(love.timer.getTime() * pulseFrequency)
+
+            love.graphics.draw(item.list[nb].images[1], item.list[nb].x, item.list[nb].y, 0, scale, scale, item.list[nb].width / 2, item.list[nb].height / 2)
             --on affiche le rayon du range autours des objets dans leurs zone de pick
-            love.graphics.circle("line", item.list[nb].x, item.list[nb].y, 50)
+            -- love.graphics.circle("line", item.list[nb].x, item.list[nb].y, 50)
         end 
     end
     -- 💻💻 on affiche tout les panel inventaire et menu pause

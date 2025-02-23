@@ -30,7 +30,7 @@ function Entities.create(type, pX, pY)
     if type == const.HERO then
         initializeEntity(entitie, const.HERO, const.HERO_SPRT, 4)
         entitie.speed = 120
-        entitie.life = 100
+        entitie.life = 5
         entitie.inventory = {}
         entitie.range = 250
         entitie.cooldownHero = 0
@@ -59,7 +59,7 @@ function Entities.create(type, pX, pY)
         entitie.buff = false
 
     -- 👻 GHOST
-    else
+    elseif type == const.GHOST then
         initializeEntity(entitie, const.GHOST, const.GHOST_SPRT, 2, pX, pY)
         entitie.speed = love.math.random(1, 10)
         entitie.state = const.NONE
@@ -73,6 +73,11 @@ function Entities.create(type, pX, pY)
         -- Clonage des sons pour les entités multiples
         entitie.growl = const.SND_GROWL:clone()
         entitie.shooEctoplasm = const.SND_SHOOT_ECTOPLASM:clone()
+
+    -- 👺👺
+    else
+        initializeEntity(entitie, const.ONI, const.ONI_SPRT, 3, pX, pY)
+        entitie.life = 100
     end
 
     return entitie

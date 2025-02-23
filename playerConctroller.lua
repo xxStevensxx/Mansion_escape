@@ -44,7 +44,7 @@ function playercontroller.update(dt, entitie, lstEntitie)
     --     entitie.angleShoot = entitie.angleShoot + 5 * dt
     -- end   
 
-    -- 🤺🤺 Notre héros attaque en fonction de son arme
+    -- 🤺🤺 Notre héros attaque en fonction de son arme en appuyant sur espace
     if love.keyboard.isDown("space") and entitie.selectedWeapon then
         -- on laance le timer
         entitie.cooldownHero = entitie.cooldownHero + dt

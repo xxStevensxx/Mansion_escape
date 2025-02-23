@@ -3,9 +3,10 @@ local game = {}
 local const = require("/constantes")
 local item = require("/items")
 local inventory = require("/inventory")
-
+local entitie = require("/entities")
 -- 📜📜 var lié au menu pause
 local pause = false
+local dead = false
 local selectedOption = 1
 local options = {
     "Reprendre",
@@ -13,9 +14,15 @@ local options = {
     "Quitter"
 }
 
--- 🔊🔊var lie au son du menu
+local deadOptions = {
+    "Recommencer",
+    "Quitter"
+}
+
+-- 🔊🔊var lie au son 
 local cancelSnd = const.SND_CANCEL:clone()
 local pauseSnd = const.SND_PAUSE:clone()
+local sndOni = const.SND_ONI:clone()
 
 function game.pause()
     pauseSnd:play()
@@ -27,13 +34,16 @@ function game.isPaused()
     return pause
 end
 
+function game.dead(state)    
+    dead = state
+end
+
 -- c'est ici qu'on choisit les objet à créer mais pas ici qu'on les crée
 function game.itemManager()
     -- on creer nos objet de maniere dynamique
     --🪓🪓🪓🪓
     axe = item.create(const.AXE, 5)
     bow = item.create(const.BOW, 1)
-
 end
 
 
@@ -82,21 +92,37 @@ function drawInventory(hero)
     local y = const.SCREENHEIGHT - const.PANEL_INVENTORY:getHeight()
     local offset = 60
 
-    -- on boucle dans l'inventaire du hero
+    -- 🪓🪓 on boucle dans l'inventaire du hero
     for index, weapon in ipairs(hero.inventory) do
         -- on affiche nos armes a l écran sur notre panel 
         love.graphics.draw(weapon.images[1], x + index * offset, y)
 
-        -- Met en surbrillance l'arme actuellement sélectionnée
+        -- 🪓🪓 Met en surbrillance l'arme actuellement sélectionnée
         if index == hero.currentWpn then
             love.graphics.setColor(1, 0, 1) -- violet
             love.graphics.rectangle("line", x + index * offset, y, 60, 60)
-            love.graphics.setColor(1, 1, 1) -- Reset color
+            love.graphics.setColor(1, 1, 1) -- blanc
         else
             -- affiche un rectangle blanc sur l'arme non selectionné
             love.graphics.rectangle("line", x + index * offset, y, 60, 60)
         end
     end
+end
+
+-- 👺👺 apparition du boss 
+function bossAppear(lstEntities)
+    local oni = entitie.create(const.ONI, const.SCREENWIDTH / 2, const.SCREENHEIGHT / 3)
+    table.insert(lstEntities, oni)
+end
+
+-- 👺👺apparition du boss si conditions remplies
+function game.finalPhase(counter, lstEntities)
+
+     if counter == 10 then
+        sndOni:play()
+        bossAppear(lstEntities)
+
+     end
 end
 
 function game.load()
@@ -127,14 +153,35 @@ function game.draw()
         drawInventory(hero)
         -- on affiche l'arme current du hero on check le nil pointer
         if hero.selectedWeapon ~= nil then
-            love.graphics.draw(hero.selectedWeapon.images[math.floor(hero.currentFrameOBJ)], hero.x + hero.width, hero.y + hero.height,hero.angleShoot, 1, 1,hero.selectedWeapon.width / 2, hero.selectedWeapon.height / 2 )
-
+            if hero.selectedWeapon.name == const.BOW then
+                love.graphics.draw(hero.selectedWeapon.images[math.floor(hero.currentFrameOBJ)], hero.x + hero.width, hero.y + hero.height,hero.angleShoot, 1, 1,hero.selectedWeapon.width / 2, hero.selectedWeapon.height / 2 )
+            else -- si c'est une arme au CAC on decale l'affichage
+                love.graphics.draw(hero.selectedWeapon.images[math.floor(hero.currentFrameOBJ)], hero.x + hero.width, hero.y + hero.selectedWeapon.images[1]:getHeight() / 2  ,hero.angle, 1, 1,hero.selectedWeapon.width / 2, hero.selectedWeapon.height / 2 )
+            end
             -- Animation de l'arme equipé
             hero.currentFrameOBJ = hero.currentFrameOBJ + 10 
             if hero.currentFrameOBJ > #hero.selectedWeapon.images + 1 then
                 hero.currentFrameOBJ = 1
             end
         end
+    end
+
+    -- Menu restart
+    if dead then
+          -- on affiche le panel pause
+          love.graphics.draw(const.PANEL_PAUSE, const.SCREENWIDTH / 2 - const.PANEL_PAUSE:getWidth() / 2, const.SCREENHEIGHT / 2 - const.PANEL_PAUSE:getHeight() / 2)
+          -- on affiche les options du panel pause
+          for key, option in pairs(deadOptions) do
+              -- on colorie le menu selectionné
+              if key == selectedOption then
+                  love.graphics.setColor(1, 0, 1) -- Option sélectionnée en violet
+              else
+                  --le reste reste blanc
+                  love.graphics.setColor(1, 1, 1) -- Option normale en blanc
+              end
+              love.graphics.printf(option, 0, (const.SCREENHEIGHT / 3) + key * 50, const.SCREENWIDTH, "center")
+              love.graphics.setColor(1, 1, 1) -- Option normale en blanc
+          end
     end
 end
 
@@ -167,6 +214,40 @@ function game.keypressed(key)
             end        
     end
 
+
+    if dead then
+        
+        if key == "up" then
+            cancelSnd:play()
+            selectedOption = selectedOption - 1
+            -- si on est deja à la premiere option du menu on retourne en bas
+            if selectedOption < 1 then
+                selectedOption = #deadOptions
+            end
+        elseif key == "down" then
+            cancelSnd:play()
+            selectedOption = selectedOption + 1
+            -- si on est a la derniere  option du menu on retourne en haut
+            if selectedOption > #deadOptions then
+                selectedOption = 1
+            end
+        -- maintenant le comportement si on appui sur entrer
+        elseif key == "return" then
+            cancelSnd:play()
+            if deadOptions[selectedOption] == "Recommencer" then
+                -- local restartcount = tonumber(love.restart) or 0
+                cancelSnd:play()
+            elseif deadOptions[selectedOption] == "Quitter" then
+                love.event.quit()
+            end
+        end        
+end    
+
 end
 
 return game
+
+
+
+-- local restartcount = tonumber(love.restart) or 0
+-- love.event.restart(restartcount + 1)

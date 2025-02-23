@@ -40,11 +40,11 @@ function spawner.spawn()
 
     table.insert(spawner.entities, entitie.create(typeEnnemies[diceMob], spawner.list[dice].x, spawner.list[dice].y))
 
-    if  spawner.entities ~= 0 then
-        for i = 1, #spawner.entities do 
-            -- print(spawner.entities[i].type)
-        end
-    end
+    -- if  spawner.entities ~= 0 then
+    --     for i = 1, #spawner.entities do 
+    --         -- print(spawner.entities[i].type)
+    --     end
+    -- end
 
 end
 

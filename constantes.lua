@@ -8,12 +8,14 @@ local constantes = {
      SND_AXE_STRIKE = love.audio.newSource("/sounds/Sword4.wav", "static"),
      SND_DESTRUCTION = 0,
      SND_GROWL = love.audio.newSource("/sounds/Darkness5.wav", "static"),
+     SND_ONI = love.audio.newSource("/sounds/Growl.wav", "static"),
      SND_DMG_MOBS = love.audio.newSource("/sounds/Damage3.wav", "static"),
      SND_DMG_SHOOT = love.audio.newSource("/sounds/Damage5.wav", "static"),
      SND_CANCEL = love.audio.newSource("/sounds/Cancel1.wav", "static"),
      SND_PAUSE = love.audio.newSource("/sounds/Decision1.wav", "static"),
      SND_PICK_WPN = love.audio.newSource("/sounds/Equip2.wav", "static"),
      SND_SWITCH_WPN = love.audio.newSource("/sounds/Equip1.wav", "static"),
+     SND_DEFEAT = love.audio.newSource("/sounds/Defeat1.wav", "static"),
      -- 💻💻 Constantes de machine a etat
      NONE = "none",
      WALK = "walk",
@@ -23,16 +25,18 @@ local constantes = {
      ATTACK = "attack",
      CHANGEDIR = "changedir",
      DEATH = "death",
-     -- 👻👾🤖🪓 Constantes de entities type 
+     -- 👻👾🤖👺🪓 Constantes de entities type 
      HERO = "hero",
      MOB = "mob",
      GHOST = "ghost",
+     ONI = "oni",
      BOW = "bow",
      AXE = "axe",
      -- 📁📁 Constantes de nom de fichier
      HERO_SPRT = "player_",
      MOB_SPRT = "monster_",
      GHOST_SPRT = "ghost_",
+     ONI_SPRT = "boss_",
      BOW_SPRT = "bow_",
      AXE_SPRT = "axe_",
      -- 📺📺  Largeur et Hauteur de l'ecran de jeu
