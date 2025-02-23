@@ -15,6 +15,7 @@ local bubble = require("/stateBubble")
 local life = require("/life")
 local spawner = require("/spawner")
 local game = require("/game")
+local item = require("/items")
 local panel = nil
 local groupe = nil
 local text = nil
@@ -24,11 +25,18 @@ local eye = love.graphics.newImage("/assets/eye.png")
 local pause = false
 
 love.graphics.setDefaultFilter("nearest")
--- love.window.setMode(1920, 1080)
 math.randomseed(os.time())
 
 
 function love.load()
+    -- 🪓🪓 item manager
+    game.itemManager()
+    game.load()
+
+    -- 💻💻
+    -- love.window.setMode(1920, 1080, { resizable = true })
+    print(const.SCREENHEIGHT)
+    print(const.SCREENHEIGHT)
     -- 📝📝 Font
     love.graphics.setFont(const.FONT)
 
@@ -36,9 +44,6 @@ function love.load()
     bckgrndMusic = const.MSC_MANSION
     bckgrndMusic:setLooping(true)
     bckgrndMusic:play()
-
-    -- setMode
-    -- love.window.setMode( 1920, 1080, {resizable = true})
 
     -- 🏡🏡spawner
     spawner.spawner()
@@ -52,15 +57,18 @@ function love.load()
     hero.angle = 0
     table.insert(lstEntities, hero)
 
-
 end
 
 function love.update(dt)
+
     -- gestion de la pause du jeu
     pause = game.isPaused()
+    -- 🪓🪓 Gestion de la proximité des objet avec le hero
+    game.findItems(hero)
+    -- 🪓🪓 gestion du changement de l'arme du hero
+    game.switchWeapon(hero)
 
     if pause  == false then
-
         love.audio.play(bckgrndMusic)
 
         -- 🏡👻👾 update du spawner on fait spawn les ennemis
@@ -76,14 +84,14 @@ function love.update(dt)
 
         if lstEntities ~= 0 then
             --on boucle dans notre lstentitie pour lui appliquer son update
-            for nb = 1, #lstEntities do
+            for nb = #lstEntities, 1, -1 do
                 --Animation des framerate des entities dans l'entitite.update
                 entitie.update(dt, lstEntities[nb])
 
                 -- on verifie si on a un hero
                 if lstEntities[nb].type == const.HERO then
                     --Si il existe on lui applique une "manette"
-                    controller.update(dt, lstEntities[nb])
+                    controller.update(dt, lstEntities[nb], lstEntities)
                 end
 
                 -- on verifie si on a des mobs
@@ -100,32 +108,36 @@ function love.update(dt)
 end
 
 function love.draw()
-    -- on affiche tout les gui inventaire et menu pause
+    for nb = 1, #item.list do
+        if item.list[nb].pick == false then
+            love.graphics.draw(item.list[nb].images[1], item.list[nb].x, item.list[nb].y, 0, 1, 1, item.list[nb].width / 2, item.list[nb].height / 2)
+            --on affiche le rayon du range autours des objets dans leurs zone de pick
+            love.graphics.circle("line", item.list[nb].x, item.list[nb].y, 50)
+        end 
+    end
+    -- 💻💻 on affiche tout les panel inventaire et menu pause
     game.draw()
     -- On boucle dans notre liste d'entities (hero ou mobs) afin de tous les afficher a l'ecran
     for index = 1, #lstEntities do
+        if lstEntities[index].type == hero then
+            -- 💻💻 on affiche tout le contenu de l'inventaire sur le panel
+            game.drawInventory(lstEntities[index])
+        end
+        --💻💻 on applique le draw de game
         machine.draw()
         --on formate notre tableau afin de travailler plus facilement dessus
         local entitie = lstEntities[index]
         --On affiche tout nos entities sans distinction de type
         love.graphics.draw(entitie.images[math.floor(entitie.currentFrame)], entitie.x, entitie.y, entitie.angle, 3, 3, entitie.offsetX, entitie.offsetY)
-        -- on empeche le nil pointer et on affiche le range
-        if entitie.range ~= nil then
-            --on affiche le rayon du range autours du mob
-            -- love.graphics.circle("line", entitie.x, entitie.y, entitie.range)
-        end
 
         -- 💭💭 stateBubble
-        bubble.state(entitie)
+        bubble.state(entitie, item.list)
 
         -- 🏡🏡 spawner
         spawner.draw()
 
-        -- Life entitie, pdv, posX, posY
+        -- Life entitie, pdv
         if entitie.type == const.HERO then
-            -- love.graphics.print(entitie.type)
-            -- love.graphics.print("pdv "..tostring(entitie.life), 400, 400)
-            love.graphics.draw(const.OBJ_BOW[entitie.currentFrameOBJ], entitie.x + entitie.width, entitie.y + entitie.height, entitie.angleShoot, 1, 1, const.OBJ_BOW[1]:getWidth() / 2, const.OBJ_BOW[1]:getHeight() / 2)
             life.show(entitie.life, 10, 10)
         elseif entitie.type ~= const.HERO then
             life.show(entitie.life, entitie.x - entitie.offsetX, entitie.y - 30, 0, 4, 4)
@@ -137,10 +149,14 @@ function love.draw()
             love.graphics.print(tostring(entitie.buff), entitie.x + 30, entitie.y - 50)
             end
     end
+
 end
 
 function love.keypressed(key)
+    -- Gestion des entrées claviers du menu
     game.keypressed(key)
+    -- switch Wpn
+    game.switchWeapon(lstEntities, key)
     -- a l'appui de la touche echape on quitte le jeu
     if key == "escape" then
         pause = game.pause()

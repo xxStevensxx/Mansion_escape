@@ -2,8 +2,8 @@ local stateBubble = {}
 
 local const = require("/constantes")
 
---param 1 le status que l'on veux afficher au dessus de l'entitie
-function stateBubble.state(entities)
+--param 1 l'entitie sur laquel on veux afficher la bubble
+function stateBubble.state(entities, itemList)
 
     if entities.state == const.GROWL then
         love.graphics.draw(const.BUBBLE_GROWL, entities.x, entities.y - 35 , 0, 2, 2, const.BUBBLE_GROWL:getWidth() / 2, const.BUBBLE_GROWL:getHeight() / 2 ) 
@@ -17,10 +17,15 @@ function stateBubble.state(entities)
         love.graphics.draw(const.BUBBLE_PURSUIT, entities.x, entities.y - 35 , 0, 2, 2, const.BUBBLE_PURSUIT:getWidth() / 2, const.BUBBLE_PURSUIT:getHeight() / 2 ) 
     end
 
-end
+    -- verif si notre hero est a proximité d'un objet
+    for nb = 1, #itemList do
+        if itemList[nb].proximity == true and itemList[nb].pick == false  then
+            if entities.type == const.HERO then
+                love.graphics.print(const.TEXT_PROX, entities.x, entities.y, 0, 2, 2) 
+            end
+        end
+    end
 
-    -- if entitieState == const.
-    --     love.graphics.draw(const.BUBBLE_GROWL, entities.x, entities.y, 0, 3, 3, const.BUBBLE_GROWL:getWidth() / 2, const.BUBBLE_GROWL:getHeight() / 2 ) 
-    -- end
+end
 
 return stateBubble

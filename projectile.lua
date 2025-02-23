@@ -21,10 +21,11 @@ function projectile.shoot(pX, pY, pAngle, pSpeed, pType, shooter)
         shooter = pType
     }
 
+    -- 👻👻
     if pType == const.GHOST then
         newProjectile.offsetX = const.PRJTL_ECTOPLASM:getWidth() / 2
         newProjectile.offsetY = const.PRJTL_ECTOPLASM:getHeight() / 2
-    else
+    else -- 🏹🏹
         newProjectile.offsetX = const.PRJTL_ARROW:getWidth() / 2
         newProjectile.offsetY = const.PRJTL_ARROW:getHeight() / 2
     end
@@ -53,8 +54,7 @@ function projectile.update(dt, entities)
                 --on formate notre code pour plus de lisibilité
                 local cible = entities[nbEntities]
 
-
-            -- si la cible est le tireur on ignore la colison
+            -- si la cible est le tireur on ignore la collison
             if p.shooter ~= cible.type then
                 -- on verifie qu'il vise bien notre hero
                 if cible.type == const.HERO then
@@ -75,7 +75,7 @@ function projectile.update(dt, entities)
                             -- on joue le son damage
                             const.SND_DMG_SHOOT:play()
                             -- on retire 1 pv au hero
-                            cible.life = cible.life - 1
+                            cible.life = cible.life - 10
                             -- on oublie pas de supprimer le projectile
                             table.remove(projectile.list, nbProjectile)
                          end

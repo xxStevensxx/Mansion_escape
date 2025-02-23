@@ -10,9 +10,6 @@ local entitie = require("/entities")
 local const = require("/constantes")
 
 
-
-
-
 -- Crée les spawner 
 function spawner.spawner()
     -- 🎲🎲 On utilise un dé pour generer un nb de spawner aleatoires entre 1 et 3
@@ -45,7 +42,7 @@ function spawner.spawn()
 
     if  spawner.entities ~= 0 then
         for i = 1, #spawner.entities do 
-            print(spawner.entities[i].type)
+            -- print(spawner.entities[i].type)
         end
     end
 

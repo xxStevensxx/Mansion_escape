@@ -30,4 +30,8 @@ function spriteManager.CreateSprite(typeFrame, frameName, frameNb)
         return sprites
 end
 
+function spriteManager.CreateSpriteSheet()
+    
+end
+
 return spriteManager
