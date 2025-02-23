@@ -10,6 +10,20 @@ function math.dist(x1, y1, x2, y2) return ((x2 - x1)^2 + (y2 - y1)^2)^0.5 end
 
 -- Machine à états des entités
 function statesMachines.states(dt, entities, lstEntities)
+    -- 💕💕 verification life
+    -- nos mobs et ghost on plus de vie ils passent en mode death
+    if entities.life <= 0 then
+        entities.state = const.DEATH
+    end
+
+    -- 💀💀 si nos MOBS, GHOST ou HERO sont dead on les supprime
+    for index = #lstEntities, 1, -1 do
+        -- MOB ET GHOST or HERO
+        if lstEntities[index].rem == true or (lstEntities[index].life <= 0 and lstEntities[index].type == const.HERO) then
+            table.remove(lstEntities, index)
+        end
+    end
+
     -- 🧺 NONE -> CHANGEDIR (si aucune action définie)
     if entities.state == const.NONE then
         entities.state = const.CHANGEDIR
@@ -71,13 +85,21 @@ function statesMachines.states(dt, entities, lstEntities)
 
     -- 🏃🏿‍♂️🏃🏿 PURSUIT -> Poursuite du héros
     elseif entities.state == const.PURSUIT then
+        -- si la cible est nul ou que la distance est superieur au range CHANGEDIR
         if not entities.target or math.dist(entities.x, entities.y, entities.target.x, entities.target.y) > entities.range then
             entities.state = const.CHANGEDIR
+        -- a proximité de morsure on passe au statut ATTACK
         elseif math.dist(entities.x, entities.y, entities.target.x, entities.target.y) < 5 then
             entities.state = const.ATTACK
             entities.vx, entities.vy = 0, 0
-        else
-            local angle = math.angle(entities.x, entities.y, entities.target.x, entities.target.y)
+        else -- on fait les mobs se rapprocher de facon erratique
+
+            --Mouvement erratique à proixmité du hero
+            local destX, destY
+            destX = math.random(entities.target.x - math.random(15, 55), entities.target.x + math.random(15, 65))
+            destY = math.random(entities.target.y - math.random(15, 55), entities.target.y + math.random(15, 65))
+            -- On applique le mouvement
+            local angle = math.angle(entities.x, entities.y, destX, destY)
             entities.vx = entities.speed * math.cos(angle)
             entities.vy = entities.speed * math.sin(angle)
         end
@@ -129,7 +151,7 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.state = const.NONE
         end
 
-    -- 🤺 ATTACK -> Attaque le héros
+    -- 🤺🤺 ATTACK -> Attaque le héros
     elseif entities.state == const.ATTACK then
         -- 👾
         if entities.type == const.MOB then
@@ -142,7 +164,7 @@ function statesMachines.states(dt, entities, lstEntities)
                 -- cela veux dire que le mob est suffisament proche pour attaquer
                 if entities.cooldownMob >= entities.delayHit then
                     entities.hitDamage:play()
-                    entities.target.life = entities.target.life - 1
+                    entities.target.life = entities.target.life - 3
                     entities.cooldownMob = 0
                 end
             end
@@ -173,6 +195,10 @@ function statesMachines.states(dt, entities, lstEntities)
             entities.speed = love.math.random(10, 50)
             entities.buff = false
         end
+        -- 💀💀 mort d'une entitie
+    elseif entities.state == const.DEATH then
+        entities.vx, entities.vy = 0, 0
+        entities.rem = true
     end
 end
 

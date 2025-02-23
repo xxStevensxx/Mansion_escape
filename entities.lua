@@ -19,6 +19,7 @@ local function initializeEntity(entitie, type, sprite, frames, pX, pY)
     entitie.height = entitieSprites.height
     entitie.offsetX = entitie.width / 2
     entitie.offsetY = entitie.height / 2
+    entitie.rem = false
 end
 
 -- Création des entités selon leur type
@@ -34,8 +35,14 @@ function Entities.create(type, pX, pY)
         entitie.range = 250
         entitie.cooldownHero = 0
         entitie.delayBow = 0.8
+        entitie.delayAxe = 2
         entitie.bowShoot = const.SND_SHOOT_BOW:clone()
+        entitie.axeStrike = const.SND_AXE_STRIKE:clone()
         entitie.currentFrameOBJ = 1
+        entitie.proximity = false
+        entitie.currentWpn = 1
+        entitie.selectedWeapon = nil
+
 
     -- 👾 MOB
     elseif type == const.MOB then
@@ -48,7 +55,7 @@ function Entities.create(type, pX, pY)
         entitie.hitDamage = const.SND_DMG_MOBS:clone()
         entitie.cooldownMob, entitie.cooldownBuff = 0, 0
         entitie.delayHit = 0.5
-        entitie.delay_buff = 0
+        entitie.delay_buff = 2
         entitie.buff = false
 
     -- 👻 GHOST

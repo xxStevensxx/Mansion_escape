@@ -1,11 +1,11 @@
 local game = {}
 
-
 local const = require("/constantes")
+local item = require("/items")
+local inventory = require("/inventory")
 
 -- 📜📜 var lié au menu pause
 local pause = false
-local inventory = true
 local selectedOption = 1
 local options = {
     "Reprendre",
@@ -15,15 +15,93 @@ local options = {
 
 -- 🔊🔊var lie au son du menu
 local cancelSnd = const.SND_CANCEL:clone()
+local pauseSnd = const.SND_PAUSE:clone()
 
 function game.pause()
-    cancelSnd:play()
+    pauseSnd:play()
     pause = not pause
     -- return pause
 end
 
 function game.isPaused()
     return pause
+end
+
+-- c'est ici qu'on choisit les objet à créer mais pas ici qu'on les crée
+function game.itemManager()
+    -- on creer nos objet de maniere dynamique
+    --🪓🪓🪓🪓
+    axe = item.create(const.AXE, 5)
+    bow = item.create(const.BOW, 1)
+
+end
+
+
+function game.findItems(entitie)
+    -- gestion de colision avec nos objet
+    -- on boucle sur tout les objets de la liste et qui seront succeptible d'etre à l'ecran 
+        for index = 1, #item.list do
+            -- on calcul la distance de notre hero au objet
+            if math.dist(entitie.x, entitie.y, item.list[index].x, item.list[index].y) < 50 then
+                -- on est a proximité de l'objet
+                item.list[index].proximity = true
+            else
+                item.list[index].proximity = false
+            end
+            -- 🪓🪓 ramasser un objet
+            if love.keyboard.isDown("e")  and item.list[index].proximity == true and item.list[index].pick == false then
+                sndPicking:play()
+                inventory.addObj(entitie, item.list[index])
+            end
+        end
+end 
+
+function game.switchWeapon(lstEntities, key)
+    -- Vérifie si la touche "q" est pressée une seule fois
+    for index = 1, #lstEntities do 
+        -- on recupere notre hero
+        if lstEntities[index].type == const.HERO then
+            -- on formate notre variable pour + de lisibilité
+            local hero = lstEntities[index]
+            if key == "q" and #hero.inventory > 0 then
+                sndSwitchWpn:play()
+                -- Incrémente l'index de l'arme actuelle
+                hero.currentWpn = hero.currentWpn % #hero.inventory + 1
+        
+                -- Définit l'arme actuelle
+                hero.selectedWeapon = hero.inventory[hero.currentWpn]
+                print("Nouvelle arme équipée :", hero.selectedWeapon.name)
+            end
+        end
+
+    end
+end
+
+function drawInventory(hero)
+    local x = 0
+    local y = const.SCREENHEIGHT - const.PANEL_INVENTORY:getHeight()
+    local offset = 60
+
+    -- on boucle dans l'inventaire du hero
+    for index, weapon in ipairs(hero.inventory) do
+        -- on affiche nos armes a l écran sur notre panel 
+        love.graphics.draw(weapon.images[1], x + index * offset, y)
+
+        -- Met en surbrillance l'arme actuellement sélectionnée
+        if index == hero.currentWpn then
+            love.graphics.setColor(1, 0, 1) -- violet
+            love.graphics.rectangle("line", x + index * offset, y, 60, 60)
+            love.graphics.setColor(1, 1, 1) -- Reset color
+        else
+            -- affiche un rectangle blanc sur l'arme non selectionné
+            love.graphics.rectangle("line", x + index * offset, y, 60, 60)
+        end
+    end
+end
+
+function game.load()
+    sndPicking = const.SND_PICK_WPN:clone()
+    sndSwitchWpn = const.SND_SWITCH_WPN:clone()
 end
 
 function game.draw()
@@ -44,11 +122,21 @@ function game.draw()
             love.graphics.setColor(1, 1, 1) -- Option normale en blanc
         end
     else
-        love.graphics.draw(const.PANEL_INVENTORY, 15 , const.SCREENHEIGHT - const.PANEL_INVENTORY:getHeight() - 15)
-        
+        -- on affiche le panel inventaire et son contenu
+        love.graphics.draw(const.PANEL_INVENTORY, 0 , const.SCREENHEIGHT - const.PANEL_INVENTORY:getHeight())
+        drawInventory(hero)
+        -- on affiche l'arme current du hero on check le nil pointer
+        if hero.selectedWeapon ~= nil then
+            love.graphics.draw(hero.selectedWeapon.images[math.floor(hero.currentFrameOBJ)], hero.x + hero.width, hero.y + hero.height,hero.angleShoot, 1, 1,hero.selectedWeapon.width / 2, hero.selectedWeapon.height / 2 )
+
+            -- Animation de l'arme equipé
+            hero.currentFrameOBJ = hero.currentFrameOBJ + 10 
+            if hero.currentFrameOBJ > #hero.selectedWeapon.images + 1 then
+                hero.currentFrameOBJ = 1
+            end
+        end
     end
 end
-
 
 function game.keypressed(key)
 
@@ -76,11 +164,9 @@ function game.keypressed(key)
                 elseif options[selectedOption] == "Quitter" then
                     love.event.quit()
                 end
-            end
-        
+            end        
     end
 
 end
-
 
 return game
